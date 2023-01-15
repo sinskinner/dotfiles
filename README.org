@@ -1,0 +1,18 @@
+#+TITLE: DotFiles
+
+* .files
+
+I do what I must, because I can.
+
+** Requirements
+
+- [[https://github.com/Homebrew/brew][Brew]]
+- [[https://github.com/ryanoasis/nerd-fonts][Nerd Fonts (SauceCodePro)]]
+- [[https://github.com/tmux/tmux][tmux]]
+- [[https://github.com/alacritty/alacritty][Alacritty]]
+- [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs]]
+- [[https://github.com/fish-shell/fish-shell][fish-shell]]
+- [[https://github.com/tnalpgge/rank-amateur-cowsay][cowsay]]
+- [[https://www.ibiblio.org/pub/linux/games/amusements/fortune/!INDEX.html][fortune]]  
+- [[https://github.com/clj-kondo/][clj-kondo]]
+- [[https://clojure-lsp.io/][lsp-clojure]]

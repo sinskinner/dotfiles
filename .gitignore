@@ -1,0 +1,15 @@
+emacs/eln-cache
+emacs/straight
+emacs/auto-save-list
+emacs/recentf
+emacs/eshell
+emacs/transient
+fish/fish_variables
+tmux/plugins/tmux
+ncspot/userstate.cbor
+**/*~
+*.db
+/emacs/.org-id-locations
+/emacs/bookmarks
+/emacs/projectile-bookmarks.eld
+/emacs/projects
