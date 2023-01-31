@@ -16,3 +16,5 @@ I do what I must, because I can.
 - [[https://www.ibiblio.org/pub/linux/games/amusements/fortune/!INDEX.html][fortune]]  
 - [[https://github.com/clj-kondo/][clj-kondo]]
 - [[https://clojure-lsp.io/][lsp-clojure]]
+- [[https://github.com/sharkdp/bat][bat]]
+- [[https://github.com/sharkdp/fd][fd]]

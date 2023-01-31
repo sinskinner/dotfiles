@@ -1,11 +1,10 @@
 set -x LC_ALL pt_BR.UTF-8
 set -x LC_CTYPE pt_BR.UTF-8
+set -x GPG_TTY $(tty)
 
 fish_add_path --path /usr/local/sbin \
     ~/.nodebrew/current/bin \
     ~/.jenv/bin
-
-
 
 if status is-interactive
    set -x XDG_CONFIG_HOME "$HOME/.config"
