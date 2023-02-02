@@ -1,10 +1,10 @@
 ;;; Functions
 
 (defun memoize (fn)
-    (let ((memo (make-hash-table :test 'equal)))
-      (lambda (&rest args)
-        (let ((value (gethash args memo)))
-          (or value (puthash args (apply fn args) memo))))))
+  (let ((memo (make-hash-table :test 'equal)))
+    (lambda (&rest args)
+      (let ((value (gethash args memo)))
+        (or value (puthash args (apply fn args) memo))))))
 
 
 (when (and
@@ -146,13 +146,14 @@
   (completion-styles '(orderless))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-(use-package catppuccin-mocha-theme
-  :straight (:host github :repo "catppuccin/emacs" :branch "main"))
-
-(use-package autothemer
-  :ensure t
-  :after catppuccin-mocha-theme
-  :config (load-theme 'catppuccin-mocha))
+(use-package catppuccin-theme
+  :straight (:type git
+             :host github
+             :local-repo "catppuccin-theme"
+             :repo "catppuccin/emacs"
+             :branch "main")
+  :custom (catppuccin-flavor 'mocha)
+  :config (load-theme 'catppuccin))
 
 (use-package smartparens
   :config
@@ -196,7 +197,7 @@
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
-  :config 
+  :config
   (exec-path-from-shell-initialize))
 
 ;;; Elixir
