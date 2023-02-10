@@ -38,7 +38,7 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 (setq use-package-always-ensure t)
-
+(add-to-list 'load-path (file-name-as-directory (expand-file-name "elisp" user-emacs-directory)))
 
 ;;; Vanilla Configs
 
@@ -99,6 +99,8 @@
   (recentf-mode t))
 
 ;;; Packages
+
+(use-package re-builder+)
 
 (use-package display-line-numbers
   :hook (display-line-numbers-mode . toggle-hl-line)
