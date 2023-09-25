@@ -1,0 +1,34 @@
+* .dotfiles
+
+We do what we must, because we can.
+
+** Dependências
+
+- [[https://commitmono.com][Commit Mono]]
+- fzf: ~sudo port install fzf~
+- fish: ~sudo port fish~
+- gcc12: ~sudo port install gcc12~
+- coreutils: ~sudo port install coreutils~
+- emacs: ~sudo port install emacs-mac-app +imagemagick~
+
+** Instalação
+
+- Clonar o repositório com ~git clone https://github.com/sinskinner/dotfiles.git --bare $HOME/Projects/dotfiles~
+- Criar ou se certificar que a pasta ~.config~ está vazia.
+- Executar os seguintes comandos:
+
+  #+begin_src sh
+    $ alias config "/usr/bin/git --git-dir=$HOME/Projects/dotfiles/ --work-tree=$HOME/.config"
+    $ cd $HOME/.config
+    $ config checkout
+    $ config submodule init
+    $ config submodule update
+    $ config config --local status.showUntrackedFiles no
+  #+end_src
+
+- Abrir o arquivo [[file:emacs/config.org]] no Emacs e executar ~M-x org-babel-tangle~.
+
+** Adendo
+- Se certificar da pasta de instalação do GCC para a compilação JIT do EMacs funcionar.
+ 
+  

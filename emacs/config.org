@@ -1,0 +1,264 @@
+#+TITLE: Super Mega Ultra Configuration do Will
+#+PROPERTY: header-args:emacs-lisp :tangle yes :results silent :exports code
+
+
+#+begin_quote
+We do what we must, because we can. ---GlaDOS
+#+end_quote
+
+* What is this?
+
+Essa é uma tentativa de ter uma configuração do emacs relativamente organizada e documentada.
+Para gerar a configuração, utilizar =M-x org-babel-tangle= ou =C-c C-v t=.
+
+* Antes de tudo
+
+** Pacotes necessários
+
+- ~sudo port install emacs-mac-app +imagemagick~
+- ~sudo port install coreutils~
+- ~sudo port install fish~
+- ~sudo port install tmux~
+
+* Configuração
+
+** Early Init
+
+Esta seção irá configurar o =early-init.el=, configuração que carrega antes da interface e dos pacotes. Só colocar configurações aqui se for estritamente necessário.
+
+*** Caminho do Libraries
+
+Por algum motivo a instalação usando o mac-ports não encontra as bibliotecas para que a compilação usando o GCC ocorra. Setamos para o caminho correto.
+Ignoramos também os warning e errors da compilação assíncrona dos pacotes com o GCC. Com =silent= eles ainda irão aparecer nos logs.
+
+#+begin_src emacs-lisp :tangle "~/.config/emacs/early-init.el" :eval no
+
+  (setenv "LIBRARY_PATH" (string-join '(
+					"/opt/local/lib/gcc12/gcc/x86_64-apple-darwin22/12.3.0/"
+					"/opt/local/lib/gcc12/")
+				      ":"))
+  (setq native-comp-async-report-warnings-errors 'silent)
+
+#+end_src
+
+*** Desabilita package.el
+
+#+begin_src emacs-lisp :tangle "~/.config/emacs/early-init.el" :eval no
+  (setq package-enable-at-startup nil)
+#+end_src
+
+
+
+** Configuração Principal
+
+*** Bare init.el
+
+Geramos o =init.el= para carregar a super configuração e iniciamos o servidor no final de tudo.
+
+#+begin_src emacs-lisp :tangle "~/.config/emacs/init.el" :eval no
+  (load-file "~/.config/emacs/config.el")
+  (server-mode 1)
+#+end_src
+
+*** Backups
+
+Colocamos os backups todos em um único lugar para que *se* um dia precisar, fica fácil achar.
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.config/emacs/backups")))
+  (with-eval-after-load 'tramp
+    (add-to-list 'tramp-backup-directory-alist
+		 (cons tramp-file-name-regexp nil)))
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.config/emacs/auto-save-list/" t)))
+#+END_SRC
+
+*** Instalação e Gerenciamento de Pacotes
+
+
+**** Compilação
+
+**** straight.el
+Conforme documentação, instalamos e inicalizamos o Straight.el com os repositórios na pasta =straight=.
+
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
+
+**** use-package.el
+
+Instalamos o =use-package.el= através do Straight.el
+
+#+begin_src emacs-lisp
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+(setq use-package-always-ensure t)
+#+end_src
+
+*** Who am I?
+
+#+begin_src emacs-lisp
+    (setq user-full-name "Willian Tomaz Nieckarz"
+	  user-mail-address "willian.nieckarz@icloud.com")
+#+end_src
+
+*** UI
+
+**** Sim ou Não
+
+Padroniza ~y~ e ~n~ para tudo.
+
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+**** Time, give it back
+
+#+begin_src emacs-lisp
+  (display-time-mode t)
+#+end_src
+
+**** Colunas na Line Bar
+
+#+begin_src emacs-lisp
+  (column-number-mode t)
+#+end_src
+
+**** Tamanho do Frame
+
+#+begin_src emacs-lisp
+      (add-to-list 'default-frame-alist
+		   '(width . 124)
+		   '(height . 42))
+#+end_src
+
+**** Fonte
+
+[[https://commitmono.com/][Commit Mono]].
+
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist
+	       '(font . "CommitMono-14"))
+#+end_src
+
+**** Tema
+
+[[https://protesilaos.com/emacs/modus-themes][Modus Themes]]
+
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :config
+    (load-theme 'modus-operandi t))
+#+end_src
+
+
+*** icomplete
+
+Minibuffer vertical ao invés de colunas
+
+#+begin_src emacs-lisp
+  (icomplete-vertical-mode)
+#+end_src
+
+*** Marginalia
+
+Adiciona anotações no minibuffer
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :init
+    (marginalia-mode))
+#+end_src
+
+** Configurações Gerais
+
+Pacotes e configurações comuns para programação e edição de texto.
+
+*** Assistente para comandos
+
+**** Which Key
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init (which-key-mode t))
+#+end_src
+
+**** Recentf
+
+#+begin_src emacs-lisp
+  (use-package recentf
+    :defer 1
+    :config
+    (recentf-mode 1))
+#+end_src
+
+*** Edição em Geral
+
+**** Smartparens
+
+Configuramos o Smartparens globalmente e para ignorar os ='=.
+
+#+begin_src emacs-lisp
+    (use-package smartparens
+      :bind (("C-(" . sp-backward-slurp-sexp)
+	     ("C-)" . sp-forward-slurp-sexp))
+      :config
+      (smartparens-global-mode t)
+      (show-smartparens-global-mode t)
+      (sp-pair "'" nil :actions :rem))
+#+end_src
+
+
+*** Programação
+
+**** Magit
+#+begin_src emacs-lisp
+  (use-package magit)
+#+end_src
+
+**** yaml
+
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+#+end_src
+
+**** Fish
+
+#+begin_src emacs-lisp
+  (use-package fish-mode)
+#+end_src
+
+*** Navegação e Arquivos
+
+**** Dired
+
+Usar o ls do pacote coreutils.
+
+#+begin_src emacs-lisp
+  (use-package dired
+    :straight nil
+    :ensure nil
+    :custom
+  (dired-listing-switches "-ahl --group-directories-first")
+  (insert-directory-program "/opt/local/bin/gls"))
+#+end_src
+
+Permitir que o atalho "a" abra o arquivo no buffer atual sem falar que sou ~a novice user~.
+
+#+begin_src emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+#+end_src
