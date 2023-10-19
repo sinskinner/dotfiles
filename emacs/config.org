@@ -67,7 +67,7 @@ Colocamos os backups todos em um único lugar para que *se* um dia precisar, fic
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist '(("." . "~/.config/emacs/backups")))
   (with-eval-after-load 'tramp
-    (add-to-list 'tramp-backup-directory-alist
+    (add-to-list 'backup-directory-alist
 		 (cons tramp-file-name-regexp nil)))
   (setq delete-old-versions -1)
   (setq version-control t)
@@ -155,6 +155,12 @@ Padroniza ~y~ e ~n~ para tudo.
 	       '(font . "CommitMono-14"))
 #+end_src
 
+**** Tabs are Evil
+
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
 **** Tema
 
 [[https://protesilaos.com/emacs/modus-themes][Modus Themes]]
@@ -166,12 +172,18 @@ Padroniza ~y~ e ~n~ para tudo.
 #+end_src
 
 
-*** icomplete
+*** Vertico
 
 Minibuffer vertical ao invés de colunas
 
 #+begin_src emacs-lisp
-  (icomplete-vertical-mode)
+  (use-package vertico
+    :custom
+    (vertico-count 12)
+    (vertico-resize t)
+    (vertico-cycle nil)
+    :config
+    (vertico-mode))
 #+end_src
 
 *** Marginalia
@@ -180,8 +192,22 @@ Adiciona anotações no minibuffer
 
 #+begin_src emacs-lisp
   (use-package marginalia
+    :bind (:map minibuffer-local-map
+                ("M-A" . marginalia-cycle))
     :init
     (marginalia-mode))
+#+end_src
+
+*** Orderless
+
+Adiciona um "engine" melhor de autocomplete
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :ensure t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
 ** Configurações Gerais
@@ -213,15 +239,15 @@ Pacotes e configurações comuns para programação e edição de texto.
 Configuramos o Smartparens globalmente e para ignorar os ='=.
 
 #+begin_src emacs-lisp
-    (use-package smartparens
-      :bind (("C-(" . sp-backward-slurp-sexp)
-	     ("C-)" . sp-forward-slurp-sexp))
-      :config
-      (smartparens-global-mode t)
-      (show-smartparens-global-mode t)
-      (sp-pair "'" nil :actions :rem))
+  (use-package smartparens
+    :config
+    (setq sp-interactive-dwim t)
+    (require 'smartparens-config)
+    (sp-use-smartparens-bindings)
+    (smartparens-global-mode t)
+    (show-smartparens-global-mode t)
+    (sp-pair "'" nil :actions :rem))
 #+end_src
-
 
 *** Programação
 
@@ -233,13 +259,54 @@ Configuramos o Smartparens globalmente e para ignorar os ='=.
 **** yaml
 
 #+begin_src emacs-lisp
-(use-package yaml-mode)
+  (use-package yaml-mode)
 #+end_src
 
 **** Fish
 
 #+begin_src emacs-lisp
   (use-package fish-mode)
+#+end_src
+
+**** Clojure
+
+***** Clojure Mode
+#+begin_src emacs-lisp
+  (use-package clojure-mode)
+#+end_src
+
+***** Cider
+
+#+begin_src emacs-lisp
+  (use-package cider
+    :defer t
+    :config
+    (flycheck-clojure-setup))
+#+end_src
+
+***** Flycheck Clojure
+
+#+begin_src emacs-lisp
+  (use-package flycheck-clojure
+    :defer t
+    :commands (flycheck-clojure-setup)
+    :config
+    (eval-after-load 'flycheck
+      '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src
+
+*** Flycheck
+
+#+begin_src emacs-lisp
+  (use-package flycheck)
+#+end_src
+
+**** Flycheck Tooltips
+
+#+begin_src emacs-lisp
+  (use-package flycheck-pos-tip
+    :after flycheck)
 #+end_src
 
 *** Navegação e Arquivos

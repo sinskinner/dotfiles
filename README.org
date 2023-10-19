@@ -10,6 +10,7 @@ We do what we must, because we can.
 - gcc12: ~sudo port install gcc12~
 - coreutils: ~sudo port install coreutils~
 - emacs: ~sudo port install emacs-mac-app +imagemagick~
+- tmux: ~sudo port install tmux~
 
 ** Instalação
 
@@ -27,6 +28,7 @@ We do what we must, because we can.
   #+end_src
 
 - Abrir o arquivo [[file:emacs/config.org]] no Emacs e executar ~M-x org-babel-tangle~.
+- Instalar os plugins do tmux com o comando ~C-Prefixo I~
 
 ** Adendo
 - Se certificar da pasta de instalação do GCC para a compilação JIT do EMacs funcionar.
