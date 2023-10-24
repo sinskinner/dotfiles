@@ -34,9 +34,9 @@ Ignoramos também os warning e errors da compilação assíncrona dos pacotes co
 #+begin_src emacs-lisp :tangle "~/.config/emacs/early-init.el" :eval no
 
   (setenv "LIBRARY_PATH" (string-join '(
-					"/opt/local/lib/gcc12/gcc/x86_64-apple-darwin22/12.3.0/"
-					"/opt/local/lib/gcc12/")
-				      ":"))
+                                        "/opt/local/lib/gcc12/gcc/x86_64-apple-darwin22/12.3.0/"
+                                        "/opt/local/lib/gcc12/")
+                                      ":"))
   (setq native-comp-async-report-warnings-errors 'silent)
 
 #+end_src
@@ -68,7 +68,7 @@ Colocamos os backups todos em um único lugar para que *se* um dia precisar, fic
   (setq backup-directory-alist '(("." . "~/.config/emacs/backups")))
   (with-eval-after-load 'tramp
     (add-to-list 'backup-directory-alist
-		 (cons tramp-file-name-regexp nil)))
+                 (cons tramp-file-name-regexp nil)))
   (setq delete-old-versions -1)
   (setq version-control t)
   (setq vc-make-backup-files t)
@@ -86,15 +86,15 @@ Conforme documentação, instalamos e inicalizamos o Straight.el com os reposit�
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 6))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 6))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 #+end_src
 
@@ -113,7 +113,7 @@ Instalamos o =use-package.el= através do Straight.el
 
 #+begin_src emacs-lisp
     (setq user-full-name "Willian Tomaz Nieckarz"
-	  user-mail-address "willian.nieckarz@icloud.com")
+          user-mail-address "willian.nieckarz@icloud.com")
 #+end_src
 
 *** UI
@@ -142,8 +142,8 @@ Padroniza ~y~ e ~n~ para tudo.
 
 #+begin_src emacs-lisp
       (add-to-list 'default-frame-alist
-		   '(width . 124)
-		   '(height . 42))
+                   '(width . 124)
+                   '(height . 42))
 #+end_src
 
 **** Fonte
@@ -152,7 +152,7 @@ Padroniza ~y~ e ~n~ para tudo.
 
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-	       '(font . "CommitMono-14"))
+               '(font . "CommitMono-14"))
 #+end_src
 
 **** Tabs are Evil
@@ -328,4 +328,21 @@ Permitir que o atalho "a" abra o arquivo no buffer atual sem falar que sou ~a no
 
 #+begin_src emacs-lisp
   (put 'dired-find-alternate-file 'disabled nil)
+#+end_src
+
+**** Projectile
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :config (projectile-mode t)
+    :custom (projectile-project-search-path '("~/Development" "~/Projects"))
+    :bind-keymap ("s-p" . projectile-command-map))
+#+end_src
+
+**** ag
+
+Pesquisar em arquivos utilizando ~ag~
+
+#+begin_src emacs-lisp
+  (use-package ag)
 #+end_src

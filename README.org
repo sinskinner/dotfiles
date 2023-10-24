@@ -11,6 +11,8 @@ We do what we must, because we can.
 - coreutils: ~sudo port install coreutils~
 - emacs: ~sudo port install emacs-mac-app +imagemagick~
 - tmux: ~sudo port install tmux~
+- fd: ~sudo port install fd~
+- ag: ~sudo port install the_silver_searcher~
 
 ** Instalação
 
