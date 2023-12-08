@@ -1,4 +1,4 @@
-* .dotfiles
+* .files
 
 We do what we must, because we can.
 
@@ -13,6 +13,9 @@ We do what we must, because we can.
 - tmux: ~sudo port install tmux~
 - fd: ~sudo port install fd~
 - ag: ~sudo port install the_silver_searcher~
+- [[https://github.com/clojure-lsp/clojure-lsp/releases][clojure-lsp]]
+- cowsay: ~sudo port install cowsay~
+- fortune: ~sudo port install fortune~
 
 ** Instalação
 

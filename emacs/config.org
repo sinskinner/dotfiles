@@ -75,6 +75,15 @@ Colocamos os backups todos em um único lugar para que *se* um dia precisar, fic
   (setq auto-save-file-name-transforms '((".*" "~/.config/emacs/auto-save-list/" t)))
 #+END_SRC
 
+*** Performance
+
+Retirado da documentação do [[https://emacs-lsp.github.io/lsp-mode/page/performance/][lsp-mode]].
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024))
+#+end_src
+
 *** Instalação e Gerenciamento de Pacotes
 
 
@@ -104,16 +113,16 @@ Conforme documentação, instalamos e inicalizamos o Straight.el com os reposit�
 Instalamos o =use-package.el= através do Straight.el
 
 #+begin_src emacs-lisp
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
-(setq use-package-always-ensure t)
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+  (setq use-package-always-ensure t)
 #+end_src
 
 *** Who am I?
 
 #+begin_src emacs-lisp
-    (setq user-full-name "Willian Tomaz Nieckarz"
-          user-mail-address "willian.nieckarz@icloud.com")
+  (setq user-full-name "Willian Tomaz Nieckarz"
+        user-mail-address "willian.nieckarz@icloud.com")
 #+end_src
 
 *** UI
@@ -138,12 +147,18 @@ Padroniza ~y~ e ~n~ para tudo.
   (column-number-mode t)
 #+end_src
 
+**** Número das linhas
+
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+#+end_src
+
 **** Tamanho do Frame
 
 #+begin_src emacs-lisp
-      (add-to-list 'default-frame-alist
-                   '(width . 124)
-                   '(height . 42))
+  (add-to-list 'default-frame-alist
+               '(width . 124)
+               '(height . 42))
 #+end_src
 
 **** Fonte
@@ -152,25 +167,97 @@ Padroniza ~y~ e ~n~ para tudo.
 
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "CommitMono-14"))
+               '(font . "CommitMono-16"))
+#+end_src
+
+**** Vivendo no tempo dos Punch Cards
+
+[[https://www.ibm.com/ibm/history/history/year_1928.html][Since 1928]]
+
+#+begin_src emacs-lisp
+  (setq fill-column 80)
 #+end_src
 
 **** Tabs are Evil
 
 #+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 2)
+  (setq indent-line-function 'insert-tab)
 #+end_src
 
 **** Tema
+
+***** Modus
 
 [[https://protesilaos.com/emacs/modus-themes][Modus Themes]]
 
 #+begin_src emacs-lisp
   (use-package modus-themes
-    :config
-    (load-theme 'modus-operandi t))
+    :defer t
+    :config)
 #+end_src
 
+***** Curry On
+
+#+begin_src emacs-lisp
+  (use-package curry-on-theme
+    :config)
+#+end_src
+
+
+***** Fluc UI
+#+begin_src emacs-lisp
+  (use-package flucui-themes
+    :config (flucui-themes-load-style 'light))
+#+end_src
+
+**** Desabilitar Toolbar e Scrollbar
+
+#+begin_src emacs-lisp
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+#+end_src
+
+**** Desabilitar a tela inicial
+
+#+begin_src emacs-lisp
+  (setq inhibit-startup-screen t)
+#+end_src
+
+*** Diminish
+
+#+begin_src emacs-lisp
+  (use-package diminish
+    :config (diminish 'auto-fill-function)
+    (diminish 'eldoc-mode))
+#+end_src
+
+*** Minions
+
+Unifica vários minors-mode em um único lugar.
+
+#+begin_src emacs-lisp
+  (use-package minions
+    :config (minions-mode 1))
+#+end_src
+
+*** Mood Line
+#+begin_src emacs-lisp
+  (use-package mood-line
+    :config
+    (mood-line-mode)
+    :custom
+    (mood-line-format mood-line-format-default-extended))
+#+end_src
+
+
+*** Rainbow Delimiters
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
 
 *** Vertico
 
@@ -204,7 +291,6 @@ Adiciona um "engine" melhor de autocomplete
 
 #+begin_src emacs-lisp
   (use-package orderless
-    :ensure t
     :custom
     (completion-styles '(orderless basic))
     (completion-category-overrides '((file (styles basic partial-completion)))))
@@ -220,6 +306,7 @@ Pacotes e configurações comuns para programação e edição de texto.
 
 #+begin_src emacs-lisp
   (use-package which-key
+    :diminish
     :init (which-key-mode t))
 #+end_src
 
@@ -232,21 +319,31 @@ Pacotes e configurações comuns para programação e edição de texto.
     (recentf-mode 1))
 #+end_src
 
+**** PlantUML
+
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :custom (plantuml-executable-path "/opt/local/bin/plantuml")
+    (plantuml-default-exec-mode 'executable)
+    :config (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+#+end_src
+
 *** Edição em Geral
 
-**** Smartparens
+**** Paredit
 
 Configuramos o Smartparens globalmente e para ignorar os ='=.
 
 #+begin_src emacs-lisp
-  (use-package smartparens
-    :config
-    (setq sp-interactive-dwim t)
-    (require 'smartparens-config)
-    (sp-use-smartparens-bindings)
-    (smartparens-global-mode t)
-    (show-smartparens-global-mode t)
-    (sp-pair "'" nil :actions :rem))
+  (use-package paredit
+    :hook
+    ((emacs-lisp-mode-hook . paredit-mode)
+     (lisp-interaction-mode-hook . paredit-mode)
+     (ielm-mode-hook . paredit-mode)
+     (cider-mode . paredit-mode)
+     (cider-repl-mode . paredit-mode)
+     (clojure-mode . paredit-mode)
+     (lisp-mode-hook . paredit-mode)))
 #+end_src
 
 *** Programação
@@ -272,7 +369,18 @@ Configuramos o Smartparens globalmente e para ignorar os ='=.
 
 ***** Clojure Mode
 #+begin_src emacs-lisp
-  (use-package clojure-mode)
+  (use-package clojure-mode
+    :hook (clojure-mode . auto-fill-mode))
+#+end_src
+
+***** Clojure Refactor
+
+#+begin_src emacs-lisp
+  (use-package clj-refactor
+    :config (cljr-add-keybindings-with-prefix "C-c C-m")
+    :custom (cljr-add-ns-to-blank-clj-files nil)
+    :hook (clojure-mode . clj-refactor-mode)
+    (clj-refactor-mode . yas-minor-mode))
 #+end_src
 
 ***** Cider
@@ -280,34 +388,49 @@ Configuramos o Smartparens globalmente e para ignorar os ='=.
 #+begin_src emacs-lisp
   (use-package cider
     :defer t
-    :config
-    (flycheck-clojure-setup))
+    :custom
+    (cider-enrich-classpath t))
 #+end_src
 
-***** Flycheck Clojure
+*** LSP Server
 
 #+begin_src emacs-lisp
-  (use-package flycheck-clojure
+  (use-package lsp-mode
+    :hook ((clojure-mode . lsp)
+           (clojurec-mode . lsp)
+           (clojurescript-mode . lsp))
+    :custom ((lsp-idle-delay 0.500)
+             (lsp-enable-completion-at-point nil)
+             (lsp-eldoc-enable-hover nil))
+    :config
+    (setenv "PATH" (concat
+                    "/opt/local/bin" path-separator
+                    (getenv "PATH")))
+    (dolist (m '(clojure-mode
+                 clojurec-mode
+                 clojurescript-mode
+                 clojurex-mode))
+      (add-to-list 'lsp-language-id-configuration `(,m . "clojure"))))
+#+end_src
+
+
+*** LSP UI
+
+#+begin_src emacs-lisp
+  (use-package lsp-ui
     :defer t
-    :commands (flycheck-clojure-setup)
-    :config
-    (eval-after-load 'flycheck
-      '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+    :commands lsp-ui-mode)
 #+end_src
 
-*** Flycheck
+*** Company Mode
 
 #+begin_src emacs-lisp
-  (use-package flycheck)
+  (use-package company
+    :custom ((company-minimum-prefix-length 1)
+             (company-idle-delay 0.0))
+    :diminish t)
 #+end_src
 
-**** Flycheck Tooltips
-
-#+begin_src emacs-lisp
-  (use-package flycheck-pos-tip
-    :after flycheck)
-#+end_src
 
 *** Navegação e Arquivos
 
@@ -319,15 +442,12 @@ Usar o ls do pacote coreutils.
   (use-package dired
     :straight nil
     :ensure nil
+    :config
+    ;; Permite que 'a' abra o arquivo.
+    (put 'dired-find-alternate-file 'disabled nil)
     :custom
-  (dired-listing-switches "-ahl --group-directories-first")
-  (insert-directory-program "/opt/local/bin/gls"))
-#+end_src
-
-Permitir que o atalho "a" abra o arquivo no buffer atual sem falar que sou ~a novice user~.
-
-#+begin_src emacs-lisp
-  (put 'dired-find-alternate-file 'disabled nil)
+    (dired-listing-switches "-ahl --group-directories-first")
+    (insert-directory-program "/opt/local/bin/gls"))
 #+end_src
 
 **** Projectile
@@ -336,7 +456,29 @@ Permitir que o atalho "a" abra o arquivo no buffer atual sem falar que sou ~a no
   (use-package projectile
     :config (projectile-mode t)
     :custom (projectile-project-search-path '("~/Development" "~/Projects"))
-    :bind-keymap ("s-p" . projectile-command-map))
+    :bind-keymap ("M-p" . projectile-command-map))
+#+end_src
+
+**** NeoTree
+#+begin_src emacs-lisp
+  (use-package emacs-neotree
+    :straight (emacs-neotree :type git
+                             :host github
+                             :repo "jaypei/emacs-neotree")
+    :custom (neo-theme 'arrow)
+    :config (defun neotree-project-dir ()
+              "Abre o NeoTree no diretório inicial do Projectile. Retirado da EmacsWiki"
+              (interactive)
+              (let (project-dir (projectile-project-root))
+                (neotree-toggle)
+                (if project-dir
+                    (if (neo-global--window-exists-p)
+                        (progn
+                          (neotree-dir project-dir)))
+                  (message "Arquivo não aberto pelo Projectile"))))
+
+    :bind (("<f8>" . neotree-toggle)
+           ("C-c <f8>" . 'neotree-project-dir)))
 #+end_src
 
 **** ag
@@ -345,4 +487,32 @@ Pesquisar em arquivos utilizando ~ag~
 
 #+begin_src emacs-lisp
   (use-package ag)
+#+end_src
+
+
+*** Little Axe Functions
+
+Funções feitas no machadinho!
+
+#+begin_src emacs-lisp
+
+  (defun my-add-line-numbers (&optional n)
+    "Adiciona números às linhas do arquivo a partir do cursor"
+    (interactive)
+    (if (equal n nil)
+        (add_line_numbers 1))
+    (when (not (eobp))
+      (progn
+        (beginning-of-line 2)
+        (insert (number-to-string n) " ")
+        (add_line_numbers (+ n 1)))))
+
+
+  (defun my-toggle-fullscreen ()
+    "Coloca em Full Screen (retirado da EmacsWiki)"
+    (interactive)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+
 #+end_src
