@@ -319,13 +319,17 @@ Pacotes e configurações comuns para programação e edição de texto.
     (recentf-mode 1))
 #+end_src
 
-**** PlantUML
+*** PlantUML
 
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :custom (plantuml-executable-path "/opt/local/bin/plantuml")
-    (plantuml-default-exec-mode 'executable)
-    :config (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+    (plantuml-default-exec-mode 'executable))
+#+end_src
+
+*** Ledger
+#+begin_src emacs-lisp
+  (use-package ledger-mode)
 #+end_src
 
 *** Edição em Geral
