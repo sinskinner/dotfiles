@@ -314,7 +314,9 @@ Pacotes e configurações comuns para programação e edição de texto.
 
 #+begin_src emacs-lisp
   (use-package recentf
-    :defer 1
+    :custom ((recentf-auto-cleanup 'never)
+             (recentf-max-saved-items 25)
+             (recentf-max-menu-items 25))
     :config
     (recentf-mode 1))
 #+end_src
@@ -330,6 +332,13 @@ Pacotes e configurações comuns para programação e edição de texto.
 *** Ledger
 #+begin_src emacs-lisp
   (use-package ledger-mode)
+#+end_src
+
+*** Edição em Geral
+
+**** Paredit
+
+Configuramos o Smartparens globalmente e para ignorar os ='=.
 #+end_src
 
 *** Edição em Geral
@@ -367,6 +376,28 @@ Configuramos o Smartparens globalmente e para ignorar os ='=.
 
 #+begin_src emacs-lisp
   (use-package fish-mode)
+#+end_src
+
+**** Rest Client
+
+#+begin_src emacs-lisp
+  (use-package restclient)
+#+end_src
+
+**** NixOS
+#+begin_src emacs-lisp
+    (use-package nix-mode
+      :mode "\\.nix\\'")
+#+end_src
+
+***** Babel Rest Client
+
+#+begin_src emacs-lisp
+  (use-package ob-restclient
+    :after restclient
+    :custom (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((restclient . t))))
 #+end_src
 
 **** Clojure
